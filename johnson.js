@@ -49,17 +49,17 @@ function dijkstra(graph, start) {
 }
 
 function johnsons(graph) {
-  // Step 1: Add imaginary Source city
+ 
   const newGraph = { ...graph };
   newGraph["Source"] = [];
   for (let city in graph) {
     newGraph["Source"].push({ to: city, cost: 0 });
   }
 
-  // Step 2: Run Bellman-Ford from Source to get heights
+  
   const heights = bellmanFord(newGraph, "Source");
 
-  // Step 3: Adjust all edge costs using heights
+ 
   const adjustedGraph = {};
   for (let city in graph) {
     adjustedGraph[city] = [];
@@ -69,12 +69,12 @@ function johnsons(graph) {
     }
   }
 
-  // Step 4: Run Dijkstra from every city
+  
   const allPairs = {};
   for (let city in graph) {
     const result = dijkstra(adjustedGraph, city);
 
-    // Step 5: Convert costs back to original values
+    
     allPairs[city] = {};
     for (let destination in result) {
       allPairs[city][destination] =
@@ -85,7 +85,7 @@ function johnsons(graph) {
   return allPairs;
 }
 
-// Your graph
+
 const graph = {
   Delhi: [{ to: "Mumbai", cost: 500 }, { to: "Bangalore", cost: 800 }],
   Mumbai: [{ to: "Chennai", cost: 300 }],
@@ -96,3 +96,32 @@ const graph = {
 const result = johnsons(graph);
 console.log("Cheapest routes between every pair of cities:");
 console.log(result);
+// Timing code
+const startTime = Date.now();
+
+const bigGraph = {};
+const cities = ["A","B","C","D","E","F","G","H","I","J",
+                "K","L","M","N","O","P","Q","R","S","T"];
+
+// Add all cities
+for(let city of cities){
+  bigGraph[city] = [];
+}
+
+// Add random flights between cities
+for(let i = 0; i < cities.length; i++){
+  for(let j = 0; j < cities.length; j++){
+    if(i !== j && Math.random() > 0.5){
+      bigGraph[cities[i]].push({
+        to: cities[j],
+        cost: Math.floor(Math.random() * 1000) + 1
+      });
+    }
+  }
+}
+
+const bigResult = johnsons(bigGraph);
+const endTime = Date.now();
+
+console.log("Total cities:", cities.length);
+console.log("Time taken:", endTime - startTime, "milliseconds");
